@@ -11,16 +11,11 @@
 #Physical id 0:  +52.0°C  (high = +87.0°C, crit = +105.0°C)
 #Core 0:         +51.0°C  (high = +87.0°C, crit = +105.0°C)
 #Core 1:         +56.0°C  (high = +87.0°C, crit = +105.0°C)
-#
-#acpitz-virtual-0
-#Adapter: Virtual device
-#temp1:         +0.0°C  (crit = +127.0°C)
-#
 
-# modify following your output
+# modify sensors & sed command following your system
 
 max_temp=64 #°C
-check_interval=1 #seconds
+check_interval=2 #seconds
 
 # max allowed cpu frequency in percentage under normal condition
 high_cpu_frq=100
@@ -33,10 +28,12 @@ target_cpu_frq=$high_cpu_frq
 while :
 do
     # take tempreture value, split by space
-    str_=$(sensors | sed -n '3,5p')
+    str_=$(sensors coretemp-isa-0000 | sed -n '3,5p')
     str__=$(echo $str_ | sed 's/(high = .....°C, crit = ......°C)//g')
     nums=$(echo $str__ | sed 's/°C//g;s/+//g;s/[0-9]://g;s/\.0//g;s/[^0-9]/ /g')
-
+    
+    #echo $nums
+    
     # get single value
     tmp1=$(echo $nums|cut -f 1 -d " ")
     tmp2=$(echo $nums|cut -f 2 -d " ")
